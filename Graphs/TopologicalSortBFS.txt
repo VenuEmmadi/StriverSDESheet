@@ -1,0 +1,67 @@
+import java.util.* ;
+
+import java.io.*; 
+
+public class Solution 
+
+{
+
+    public static void adjList(ArrayList<ArrayList<Integer>> edges,Map<Integer,List<Integer>> adj){
+        for(int i=0;i<edges.size();i++){
+            int u = edges.get(i).get(0);
+            int v = edges.get(i).get(1);
+            if(adj.containsKey(u))
+            adj.get(u).add(v);
+            else{
+                List<Integer> list = new ArrayList<>();
+                list.add(v);
+                adj.put(u,list);
+            }
+        }
+    }
+
+    public static ArrayList<Integer> topologicalSort(ArrayList<ArrayList<Integer>> edges, int v, int e) 
+    {
+        // Write your code here
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        adjList(edges, adj);
+        ArrayList<Integer> ans = new ArrayList<>();
+        //Set<Integer> visited = new HashSet<>();
+        int[] inDeg = new int[v];
+        inDegree(edges, inDeg);
+        topSort(v, adj ,inDeg, ans);
+        return ans;
+    }
+
+    public static void inDegree(ArrayList<ArrayList<Integer>> edges, int[] inDeg){
+        for(int i=0; i<edges.size();i++){
+            int v = edges.get(i).get(1);
+            inDeg[v]++;
+        }
+    }
+
+    public static void topSort(int v, Map<Integer,List<Integer>> adj, int[] inDeg, ArrayList<Integer> ans){
+        Queue<Integer> queue = new LinkedList<>();
+        for(int i=0; i<v; i++){
+            if(inDeg[i]==0){
+                queue.add(i);
+            }
+        }
+
+        while(!queue.isEmpty()){
+            int val = queue.remove();
+            ans.add(val);
+            if(adj.containsKey(val)){
+                List<Integer> list = adj.get(val);
+                for(int i=0; i<list.size(); i++){
+                    inDeg[list.get(i)] --;
+                    if(inDeg[list.get(i)]==0)
+                        queue.add(list.get(i));
+                }
+            }   
+        }
+    } 
+}
+
+ 
+
